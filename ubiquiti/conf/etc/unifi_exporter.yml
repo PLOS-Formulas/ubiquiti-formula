@@ -1,0 +1,11 @@
+## this file is salt controlled 
+listen:
+  address: localhost:{{ listening_port }}
+  metricspath: /unifi_metrics
+unifi:
+  address: https://{{ unifi_address }}:{{ unifi_port }}
+  username: {{ username }}
+  password: {{ salt.pillar.get('secrets:unifi:monitor:webui_password') }} 
+  site: {{ site }}
+  insecure: true
+  timeout: 10s

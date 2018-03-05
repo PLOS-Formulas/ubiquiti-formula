@@ -1,0 +1,24 @@
+{% set env_config = salt.grains.filter_by(
+    {
+        'default': {
+            'unifi_controller': {
+                'current_version': '5.6.30',
+                'webui_username': {
+                    'exporter_access': 'monitor'
+                }
+            }
+        }, 
+        'vagrant': {
+	    'unifi_address': 'ubiquiti-901.sfo.plos.org',
+            'unifi_port': '8443'
+        }
+        'dev': {
+            'unifi_address': 'ubiquiti-201.sfo.plos.org',
+            'unifi_port': '8443'
+        },
+        'prod': {
+            'unifi_address': 'unifi.plos.org',
+            'unifi_port': '8443'
+        }   
+    }, grain='environment', base='default'
+) %}
