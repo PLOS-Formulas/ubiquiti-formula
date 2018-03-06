@@ -1,4 +1,4 @@
-{% from "ubiquity/envmap.jinja" import env_config as config with context %}
+{% from "ubiquiti/envmap.jinja" import env_config as config with context %}
 
 {% set controller_version = config['unifi_controller']['current_version'] %}
 {% set unifi_address = config['unifi_address'] %}
