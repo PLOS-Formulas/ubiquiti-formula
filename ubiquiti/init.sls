@@ -3,7 +3,7 @@
 {% set controller_version = config['unifi_controller']['current_version'] %}
 {% set unifi_address = config['unifi_address'] %}
 {% set unifi_port = config['unifi_port'] %}
-{% set unifi_access_webui_username = config['unifi_controller']['webui_username']['exporter_access'] }
+{% set unifi_access_webui_username = config['unifi_controller']['webui_username']['exporter_access'] %}
 
 {% set unifi_home = salt.pillar.get('uids:unifi:home', '/opt/unifi') %}
 
