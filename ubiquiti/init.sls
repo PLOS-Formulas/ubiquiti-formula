@@ -10,10 +10,18 @@
 include:
   - java
 
+ubiquiti-controller-install-debconf:
+  debconf.set:
+    - name: unifi
+    - data:
+        'unifi/has_backup': {'type': 'boolean', 'value': 'true'}
+
 ubiquiti-controller-install:
   pkg.installed:
-   - sources:
-     - unifi_sysvinit_all: https://dl.ubnt.com/unifi/{{ controller_version }}/unifi_sysvinit_all.deb
+    - sources:
+      - unifi_sysvinit_all: https://dl.ubnt.com/unifi/{{ controller_version }}/unifi_sysvinit_all.deb
+    - require:
+      - debconf: ubiquiti-controller-install-debconf
 
 unifi:
   group.present:
@@ -45,7 +53,7 @@ unifi-exporter:
       - user: unifi
       - service: unifi
 
-unifi-exporter-init
+unifi-exporter-init:
   file.managed:
     - name: /etc/init/unifi-exporter.conf
     - source: salt://ubiquity/conf/etc/init/unifi-exporter.conf
