@@ -56,7 +56,7 @@ unifi-exporter:
 unifi-exporter-init:
   file.managed:
     - name: /etc/init/unifi-exporter.conf
-    - source: salt://ubiquity/conf/etc/init/unifi-exporter.conf
+    - source: salt://ubiquiti/conf/etc/init/unifi-exporter.conf
     - template: jinja
     - defaults:
         server_bin: /usr/local/bin/unifi_exporter
