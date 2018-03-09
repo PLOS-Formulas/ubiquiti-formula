@@ -10,19 +10,6 @@
 include:
   - java
 
-ubiquiti-controller-install-debconf:
-  debconf.set:
-    - name: unifi
-    - data:
-        'unifi/has_backup': {'type': 'boolean', 'value': 'true'}
-
-ubiquiti-controller-install:
-  pkg.installed:
-    - sources:
-      - unifi_sysvinit_all: https://dl.ubnt.com/unifi/{{ controller_version }}/unifi_sysvinit_all.deb
-    - require:
-      - debconf: ubiquiti-controller-install-debconf
-
 unifi:
   group.present:
     - gid: {{ pillar['uids']['unifi']['gid'] }}
@@ -40,12 +27,27 @@ unifi:
     - require:
       - pkg: ubiquiti-controller-install
 
+ubiquiti-controller-install-debconf:
+  debconf.set:
+    - name: unifi
+    - data:
+        'unifi/has_backup': {'type': 'boolean', 'value': 'true'}
+
+ubiquiti-controller-install:
+  pkg.installed:
+    - name: unifi
+    - require:
+      - debconf: ubiquiti-controller-install-debconf
+      - user: unifi
+
+
 # unifi exporter
 
 unifi-exporter:
   file.managed:
     - name: /usr/local/bin/unifi_exporter
     - source: s3://salt-prod/unifi/unifi_exporter
+    - source_hash: md5=2046bcf72099c73a1d68032ad3f203ef 
     - user: unifi
     - group: unifi
     - mode: 0755
