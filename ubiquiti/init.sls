@@ -31,8 +31,7 @@ ubiquiti-controller-install-debconf:
   debconf.set:
     - name: unifi
     - data:
-        'unifi/has_backup': {'type': 'boolean', 'value': 'true'}
-
+        'unifi/has_backup': {'type': 'boolean', 'value': 'true'} 
 ubiquiti-controller-install:
   pkg.installed:
     - name: unifi
@@ -81,3 +80,45 @@ unifi-exporter-config:
         unifi_port: {{ unifi_port }}
         username: {{ unifi_access_webui_username }}
         site: SFO-Office
+
+#syslog stuff
+unifi-controller-rsyslog:
+  file.managed:
+    - name: /etc/rsyslog.d/ubiquiti.conf
+    - source: salt://ubiquiti/conf/etc/rsyslog.d/ubiquiti.conf
+    - template: jinja
+    - defaults:
+       mongod_file_location: /var/log/unifi/mongod.log
+       mongod_tag: unificontroller
+       mongod_state_file: unifi_mongodb_log
+       mongod_facility: local0
+       mongod_severity: info 
+       server_file_location: /var/log/unifi/server.log
+       server_tag: unificontroller 
+       server_state_file: unifi_server_log
+       server_facility: local0
+       server_severity: info
+       logtrust_relay_fqdn: logtrust-101.soma.plos.org
+       logtrust_relay_port: 13006
+
+
+#change permission of the unifi server logs
+unifi-server-logs:
+  file.managed:
+    - name: /var/log/unifi/server.log
+    - mode: 0640
+    - replace: False
+    
+unifi-mongod-logs:
+  file.managed:
+    - name: /var/log/unifi/mongod.log
+    - mode: 0640
+    - replace: False
+
+# add syslog user to the unifi group
+extend:
+  syslog:
+    user.present:
+      - optional_groups: [ unifi ] 
+      - remove_groups: False 
+
