@@ -13,6 +13,8 @@ include:
 unifi:
   group.present:
     - gid: {{ pillar['uids']['unifi']['gid'] }}
+    - addusers:
+      - syslog
   user.present:
     - uid: {{ pillar['uids']['unifi']['uid'] }}
     - gid: {{ pillar['uids']['unifi']['gid'] }}
@@ -114,11 +116,4 @@ unifi-mongod-logs:
     - name: /var/log/unifi/mongod.log
     - mode: 0640
     - replace: False
-
-# add syslog user to the unifi group
-extend:
-  syslog:
-    user.present:
-      - optional_groups: [ unifi ] 
-      - remove_groups: False 
 
