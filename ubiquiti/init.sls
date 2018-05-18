@@ -1,9 +1,11 @@
 {% from "ubiquiti/envmap.jinja" import env_config as config with context %}
 
+{% set environment = salt.grains.get('environment') %}
 {% set controller_version = config['unifi_controller']['current_version'] %}
 {% set unifi_address = config['unifi_address'] %}
 {% set unifi_port = config['unifi_port'] %}
 {% set unifi_access_webui_username = config['unifi_controller']['webui_username']['exporter_access'] %}
+{% set listening_port = 9130 %}
 
 {% set unifi_home = salt.pillar.get('uids:unifi:home', '/opt/unifi') %}
 
@@ -77,7 +79,7 @@ unifi-exporter-config:
     - source: salt://ubiquiti/conf/etc/unifi_exporter.yml
     - template: jinja
     - defaults:
-        listening_port: 9130 
+        listening_port: {{ listening_port }}
         unifi_address: {{ unifi_address }}
         unifi_port: {{ unifi_port }}
         username: {{ unifi_access_webui_username }}
@@ -117,3 +119,12 @@ unifi-mongod-logs:
     - mode: 0640
     - replace: False
 
+ubiquiti_exporter:
+  plos_consul.advertise:
+    - name: ubiquiti_exporter
+    - port: {{ listening_port }}
+    - tags:
+      - {{ environment }}
+    - checks:
+      - tcp: {{ listening_port }}
+        interval: 10s
