@@ -130,5 +130,5 @@ ubiquiti_exporter:
           tags:
             - {{ environment }}
           checks:
-            - tcp: {{ listening_port }}
+            - tcp: {{ grains['fqdn'] }}:{{ listening_port }}
               interval: 10s
