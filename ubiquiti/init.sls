@@ -120,11 +120,15 @@ unifi-mongod-logs:
     - replace: False
 
 ubiquiti_exporter:
-  plos_consul.advertise:
-    - name: ubiquiti_exporter
-    - port: {{ listening_port }}
-    - tags:
-      - {{ environment }}
-    - checks:
-      - tcp: {{ listening_port }}
-        interval: 10s
+  file.serialize:
+    - name: /etc/consul.d/ubiquiti-exporter.json
+    - formatter: json
+    - dataset:
+        service:
+          name: ubiquiti-exporter
+          port: {{ listening_port }}
+          tags:
+            - {{ environment }}
+          checks:
+            - tcp: {{ listening_port }}
+              interval: 10s
